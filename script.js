@@ -172,55 +172,153 @@ function initServiceRows() {
 // Вызываем функцию
 initServiceRows();
 
-// Слайдер преимуществ с эффектами
+// Слайдер преимуществ с стекломорфизмом и голографическими эффектами
 function initBenefitsSlider() {
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
     const prevBtn = document.querySelector('.prev-arrow');
     const nextBtn = document.querySelector('.next-arrow');
     const progressBar = document.querySelector('.progress-bar');
+    const benefitItems = document.querySelectorAll('.benefit-item');
     
     let currentSlide = 0;
     let autoSlideInterval;
+    let isInteracting = false;
     const slideDuration = 5000; // 5 секунд
 
+    // Проверка мобильного устройства
+    function isMobileDevice() {
+        return window.innerWidth <= 768;
+    }
+
+    // Анимация появления элементов преимуществ
+    function animateBenefitItems() {
+        benefitItems.forEach((item, index) => {
+            // Сброс анимации
+            item.style.animation = 'none';
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(25px)';
+            
+            // Запуск анимации с задержкой
+            setTimeout(() => {
+                item.style.animation = `benefitAppear 0.6s ease ${index * 0.1}s forwards`;
+            }, 100);
+        });
+    }
+
+    // Функция перехода к слайду
     function goToSlide(slideIndex) {
         // Скрываем все слайды
-        slides.forEach(slide => slide.classList.remove('active'));
+        slides.forEach(slide => {
+            slide.classList.remove('active');
+            slide.style.opacity = '0';
+            slide.style.transform = 'translateX(40px)';
+        });
+        
         dots.forEach(dot => dot.classList.remove('active'));
         
         // Показываем выбранный слайд
         slides[slideIndex].classList.add('active');
+        setTimeout(() => {
+            slides[slideIndex].style.opacity = '1';
+            slides[slideIndex].style.transform = 'translateX(0)';
+        }, 50);
+        
         dots[slideIndex].classList.add('active');
         
+        // Анимируем элементы преимуществ
+        setTimeout(animateBenefitItems, 300);
+        
         // Сбрасываем и запускаем прогресс-бар
+        progressBar.style.animation = '';
         progressBar.style.width = '0%';
-        progressBar.style.animation = 'none';
         
         setTimeout(() => {
-            progressBar.style.animation = `progress ${slideDuration}ms linear, progressGlow 2s ease-out`;
+            if (!isMobileDevice()) {
+                progressBar.style.animation = `progress ${slideDuration}ms linear, progressGlow 2s ease-out`;
+            } else {
+                progressBar.style.animation = `progress ${slideDuration}ms linear`;
+            }
             progressBar.style.width = '100%';
-        }, 50);
+        }, 100);
         
         currentSlide = slideIndex;
     }
 
+    // Следующий слайд
     function nextSlide() {
         const next = (currentSlide + 1) % slides.length;
         goToSlide(next);
     }
 
+    // Предыдущий слайд
     function prevSlide() {
         const prev = (currentSlide - 1 + slides.length) % slides.length;
         goToSlide(prev);
     }
 
+    // Автопрокрутка
     function startAutoSlide() {
-        autoSlideInterval = setInterval(nextSlide, slideDuration);
+        stopAutoSlide(); // Останавливаем предыдущий интервал
+        
+        autoSlideInterval = setInterval(() => {
+            if (!isInteracting) {
+                nextSlide();
+            }
+        }, slideDuration);
     }
 
     function stopAutoSlide() {
         clearInterval(autoSlideInterval);
+    }
+
+    // Hover-эффекты для элементов преимуществ
+    function initHoverEffects() {
+        benefitItems.forEach(item => {
+            if (!isMobileDevice()) {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.02)';
+                    this.style.background = 'rgba(255, 255, 255, 0.12)';
+                    this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                    this.style.background = 'rgba(255, 255, 255, 0.07)';
+                    this.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                });
+            }
+        });
+
+        // Стрелки навигации
+        [prevBtn, nextBtn].forEach(arrow => {
+            arrow.addEventListener('mouseenter', () => {
+                if (!isMobileDevice()) {
+                    isInteracting = true;
+                }
+            });
+            
+            arrow.addEventListener('mouseleave', () => {
+                if (!isMobileDevice()) {
+                    isInteracting = false;
+                }
+            });
+        });
+
+        // Точки навигации
+        dots.forEach(dot => {
+            dot.addEventListener('mouseenter', () => {
+                if (!isMobileDevice()) {
+                    isInteracting = true;
+                }
+            });
+            
+            dot.addEventListener('mouseleave', () => {
+                if (!isMobileDevice()) {
+                    isInteracting = false;
+                }
+            });
+        });
     }
 
     // Обработчики событий
@@ -244,196 +342,85 @@ function initBenefitsSlider() {
         });
     });
 
-    // Пауза при наведении
-    const sliderWrapper = document.querySelector('.slider-wrapper');
-    sliderWrapper.addEventListener('mouseenter', stopAutoSlide);
-    sliderWrapper.addEventListener('mouseleave', startAutoSlide);
-
-    // Запуск
-    startAutoSlide();
-}
-
-// Инициализация слайдера
-initBenefitsSlider();
-
-
-// 3D Карусель отзывов
-function initReviewsCarousel() {
-    const carouselTrack = document.querySelector('.carousel-track');
-    const reviewCards = document.querySelectorAll('.review-card');
-    const indicators = document.querySelectorAll('.indicator');
-    const arrowUp = document.querySelector('.arrow-up');
-    const arrowDown =document.querySelector('.arrow-down');
-    
-    let currentIndex = 2; // Начинаем с центральной карточки (3я из 5)
-    let autoScrollInterval;
-    const scrollDuration = 8000; // 8 секунд
-
-    // Функция обновления карусели
-    function updateCarousel() {
-        // Сбрасываем все активные состояния
-        reviewCards.forEach(card => card.classList.remove('active'));
-        indicators.forEach(indicator => indicator.classList.remove('active'));
-        
-        // Устанавливаем активную карточку
-        reviewCards[currentIndex].classList.add('active');
-        indicators[currentIndex].classList.add('active');
-        
-        // Обновляем 3D позиционирование всех карточек
-        updateCardPositions();
-    }
-
-    // Функция для 3D позиционирования карточек
-    function updateCardPositions() {
-        reviewCards.forEach((card, index) => {
-            const offset = index - currentIndex;
-            let transform, opacity, zIndex, scale;
-            
-            switch(offset) {
-                case -2: // Самая верхняя
-                    transform = `translateY(-200%) scale(0.7) rotateX(10deg)`;
-                    opacity = 0.3;
-                    zIndex = 1;
-                    break;
-                case -1: // Верхняя боковая
-                    transform = `translateY(-100%) scale(0.85) rotateX(5deg)`;
-                    opacity = 0.6;
-                    zIndex = 2;
-                    break;
-                case 0: // Активная центральная
-                    transform = `translateY(0) scale(1) rotateX(0)`;
-                    opacity = 1;
-                    zIndex = 5;
-                    break;
-                case 1: // Нижняя боковая
-                    transform = `translateY(100%) scale(0.85) rotateX(-5deg)`;
-                    opacity = 0.6;
-                    zIndex = 2;
-                    break;
-                case 2: // Самая нижняя
-                    transform = `translateY(200%) scale(0.7) rotateX(-10deg)`;
-                    opacity = 0.3;
-                    zIndex = 1;
-                    break;
-                default:
-                    // Для карточек вне видимости
-                    transform = `translateY(${offset > 0 ? 300 : -300}%) scale(0.5)`;
-                    opacity = 0;
-                    zIndex = 0;
-            }
-            
-            card.style.transform = transform;
-            card.style.opacity = opacity;
-            card.style.zIndex = zIndex;
-        });
-    }
-
-    // Функция перехода к следующему отзыву
-    function nextReview() {
-        currentIndex = (currentIndex + 1) % reviewCards.length;
-        updateCarousel();
-    }
-
-    // Функция перехода к предыдущему отзыву
-    function prevReview() {
-        currentIndex = (currentIndex - 1 + reviewCards.length) % reviewCards.length;
-        updateCarousel();
-    }
-
-    // Функция перехода к конкретному отзыву
-    function goToReview(index) {
-        currentIndex = index;
-        updateCarousel();
-    }
-
-    // Автопрокрутка
-    function startAutoScroll() {
-        autoScrollInterval = setInterval(nextReview, scrollDuration);
-    }
-
-    function stopAutoScroll() {
-        clearInterval(autoScrollInterval);
-    }
-
-    // Обработчики событий для стрелок
-    arrowDown.addEventListener('click', () => {
-        stopAutoScroll();
-        nextReview();
-        startAutoScroll();
-    });
-
-    arrowUp.addEventListener('click', () => {
-        stopAutoScroll();
-        prevReview();
-        startAutoScroll();
-    });
-
-    // Обработчики для индикаторов
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            stopAutoScroll();
-            goToReview(index);
-            startAutoScroll();
-        });
-    });
-
     // Свайпы для мобильных
-    let touchStartY = 0;
-    let touchEndY = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    const slidesContainer = document.querySelector('.slides-container');
+    
+    if (slidesContainer) {
+        slidesContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            stopAutoSlide();
+        }, false);
 
-    carouselTrack.addEventListener('touchstart', (e) => {
-        touchStartY = e.changedTouches[0].screenY;
-        stopAutoScroll();
-    }, false);
-
-    carouselTrack.addEventListener('touchend', (e) => {
-        touchEndY = e.changedTouches[0].screenY;
-        handleSwipe();
-        startAutoScroll();
-    }, false);
+        slidesContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            startAutoSlide();
+        }, false);
+    }
 
     function handleSwipe() {
         const swipeThreshold = 50;
         
-        if (touchEndY < touchStartY - swipeThreshold) {
-            // Свайп вниз - следующий отзыв
-            nextReview();
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Свайп влево - следующий слайд
+            nextSlide();
         }
-        if (touchEndY > touchStartY + swipeThreshold) {
-            // Свайп вверх - предыдущий отзыв
-            prevReview();
+        if (touchEndX > touchStartX + swipeThreshold) {
+            // Свайп вправо - предыдущий слайд
+            prevSlide();
         }
     }
 
-    // Клавиатурная навигация
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowDown') {
-            stopAutoScroll();
-            nextReview();
-            startAutoScroll();
-        }
-        if (e.key === 'ArrowUp') {
-            stopAutoScroll();
-            prevReview();
-            startAutoScroll();
-        }
-    });
+    // Пауза при наведении на весь слайдер
+    const sliderWrapper = document.querySelector('.slider-wrapper');
+    if (sliderWrapper) {
+        sliderWrapper.addEventListener('mouseenter', () => {
+            if (!isMobileDevice()) {
+                isInteracting = true;
+                stopAutoSlide();
+            }
+        });
+        
+        sliderWrapper.addEventListener('mouseleave', () => {
+            if (!isMobileDevice()) {
+                isInteracting = false;
+                startAutoSlide();
+            }
+        });
+    }
 
-    // Пауза при наведении
-    const carouselWrapper = document.querySelector('.reviews-carousel-wrapper');
-    carouselWrapper.addEventListener('mouseenter', stopAutoScroll);
-    carouselWrapper.addEventListener('mouseleave', startAutoScroll);
+    // Адаптация при изменении размера окна
+    function handleResize() {
+        // Перезапускаем автоплей при изменении размера
+        stopAutoSlide();
+        startAutoSlide();
+        
+        // Обновляем hover-эффекты
+        initHoverEffects();
+    }
 
-    // Инициализация
-    updateCarousel();
-    startAutoScroll();
+    window.addEventListener('resize', handleResize);
 
-    // Адаптация при ресайзе окна
-    window.addEventListener('resize', updateCardPositions);
+    // Запуск
+    goToSlide(currentSlide);
+    startAutoSlide();
+    initHoverEffects();
+
+    // Возвращаем методы для внешнего управления
+    return {
+        nextSlide,
+        prevSlide,
+        goToSlide,
+        stopAutoSlide,
+        startAutoSlide
+    };
 }
 
-// Инициализация карусели
-initReviewsCarousel();
+// Инициализация слайдера
+const benefitsSlider = initBenefitsSlider();
 
 
 }); // Конец DOMContentLoaded
