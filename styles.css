@@ -2035,56 +2035,136 @@ body::after {
   cursor: pointer !important;
 }
 
-/* ===== СЛАЙДЕР ПРЕИМУЩЕСТВ С ЭФФЕКТАМИ СВЕЧЕНИЯ ===== */
+/* ===== УЛУЧШЕННЫЙ СЛАЙДЕР ПРЕИМУЩЕСТВ С СТЕКЛОМОРФИЗМОМ ===== */
+
 .benefits-slider {
     padding: 60px 0;
     position: relative;
-}
-
-.benefits-slider .container {
-    max-width: 800px;
-}
-
-.slider-wrapper {
-    position: relative;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(160, 217, 200, 0.1) 100%);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 40px 30px 60px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px rgba(107, 119, 112, 0.15);
     overflow: hidden;
 }
 
-/* Прогресс-бар */
+/* Жидкий градиентный фон для всей секции */
+.benefits-slider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(160, 217, 200, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(212, 196, 108, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    animation: liquidBackground 20s ease-in-out infinite;
+    z-index: 0;
+}
+
+@keyframes liquidBackground {
+    0%, 100% { 
+        transform: translate(0, 0) scale(1); 
+    }
+    33% { 
+        transform: translate(30px, -20px) scale(1.1); 
+    }
+    66% { 
+        transform: translate(-20px, 30px) scale(0.9); 
+    }
+}
+
+.benefits-slider .container {
+    max-width: 900px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Стекломорфный слайдер */
+.slider-wrapper {
+    position: relative;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 28px;
+    padding: 45px 35px 75px;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+/* Дополнительный жидкий слой внутри слайдера */
+.slider-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: 
+        radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 30% 70%, rgba(160, 217, 200, 0.08) 0%, transparent 40%);
+    animation: liquidFloat 25s linear infinite;
+    z-index: 0;
+}
+
+@keyframes liquidFloat {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(100px, 50px) rotate(360deg); }
+}
+
+/* Прогресс-бар в стиле стекла */
 .slider-progress {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 3px;
-    background: rgba(160, 217, 200, 0.3);
-    border-radius: 20px 20px 0 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 28px 28px 0 0;
     overflow: hidden;
 }
 
 .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--gold-text), var(--light-gold));
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(160, 217, 200, 0.9) 50%,
+        rgba(255, 255, 255, 0.8) 100%);
     width: 0%;
     transition: width 5s linear;
-    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Голографическое свечение прогресс-бара */
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        transparent 100%);
+    animation: holographicShine 2s ease-in-out infinite;
+}
+
+@keyframes holographicShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
 }
 
 /* Контейнер слайдов */
 .slides-container {
     position: relative;
-    height: 300px;
-    overflow: hidden;
-    margin-bottom: 30px;
+    height: 350px; /* Увеличиваем высоту */
+    overflow: visible; /* Меняем hidden на visible */
+    margin-bottom: 35px;
 }
 
-/* Слайды с эффектами свечения */
+/* Слайды с эффектом стекла */
 .slide {
     position: absolute;
     top: 0;
@@ -2092,93 +2172,86 @@ body::after {
     width: 100%;
     height: 100%;
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateX(40px);
     transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding: 0 20px;
 }
 
 .slide.active {
     opacity: 1;
     transform: translateX(0);
-    animation: slideGlowEffect 1.2s ease-out;
 }
 
-/* Эффект свечения для всего слайда */
-@keyframes slideGlowEffect {
-    0% {
-        box-shadow: 0 0 0 0 rgba(163, 139, 53, 0);
-        filter: brightness(1);
-    }
-    20% {
-        box-shadow: 0 0 0 8px rgba(163, 139, 53, 0.15);
-        filter: brightness(1.05);
-    }
-    40% {
-        box-shadow: 0 0 0 15px rgba(163, 139, 53, 0.1);
-        filter: brightness(1.08);
-    }
-    60% {
-        box-shadow: 0 0 0 20px rgba(163, 139, 53, 0.05);
-        filter: brightness(1.05);
-    }
-    80% {
-        box-shadow: 0 0 0 15px rgba(163, 139, 53, 0.02);
-        filter: brightness(1.02);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(163, 139, 53, 0);
-        filter: brightness(1);
-    }
-}
-
-/* Заголовок слайда с эффектом свечения */
+/* Голографические заголовки */
 .slide-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    background: linear-gradient(135deg, var(--gold-text) 0%, var(--light-gold) 100%);
+    background: linear-gradient(135deg, 
+        #2d7a65 0%,          /* Темно-зеленый */
+        #a38b35 50%,         /* Золотой */
+        #1a4d3d 100%         /* Очень темный зеленый */
+    );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     text-align: center;
-    margin-bottom: 30px;
-    text-shadow: 0 2px 10px rgba(163, 139, 53, 0.3);
-    animation: titleGlow 1.5s ease-out 0.3s both;
+    margin-bottom: 35px;
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.1), /* Добавляем тень для читаемости */
+        0 0 20px rgba(255, 255, 255, 0.3);
+    position: relative;
+    animation: titleHologram 3s ease-in-out infinite;
 }
 
-@keyframes titleGlow {
-    0% {
-        text-shadow: 0 0 0 rgba(163, 139, 53, 0);
-        transform: scale(1);
+@keyframes titleHologram {
+    0%, 100% { 
+        filter: brightness(1) contrast(1);
+        text-shadow: 
+            0 2px 10px rgba(255, 255, 255, 0.3),
+            0 0 30px rgba(160, 217, 200, 0.2);
     }
-    50% {
-        text-shadow: 0 0 15px rgba(163, 139, 53, 0.4),
-                     0 0 30px rgba(163, 139, 53, 0.2);
-        transform: scale(1.02);
-    }
-    100% {
-        text-shadow: 0 2px 10px rgba(163, 139, 53, 0.3);
-        transform: scale(1);
+    50% { 
+        filter: brightness(1.1) contrast(1.1);
+        text-shadow: 
+            0 2px 15px rgba(255, 255, 255, 0.4),
+            0 0 40px rgba(160, 217, 200, 0.3),
+            0 0 60px rgba(212, 196, 108, 0.2);
     }
 }
 
-/* Список преимуществ */
+/* Стеклянные карточки преимуществ */
 .benefits-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: grid;
+    gap: 18px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .benefit-item {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 20px 25px;
     display: flex;
     align-items: flex-start;
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 18px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.6s ease forwards;
+    transform: translateY(25px);
+    animation: benefitAppear 0.6s ease forwards;
+    min-height: 80px;
+    align-items: center;
 }
 
 .benefit-item:nth-child(1) { animation-delay: 0.1s; }
@@ -2186,138 +2259,158 @@ body::after {
 .benefit-item:nth-child(3) { animation-delay: 0.3s; }
 .benefit-item:nth-child(4) { animation-delay: 0.4s; }
 
-@keyframes fadeInUp {
+@keyframes benefitAppear {
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-/* Галочки с эффектом свечения */
+.benefit-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Иконки с голографическим эффектом */
 .check-icon {
-    color: var(--light-gold);
-    font-size: 1.2rem;
+    color: #2d7a65;
+    font-size: 1.3rem;
     font-weight: bold;
     flex-shrink: 0;
     margin-top: 2px;
-    text-shadow: 0 2px 5px rgba(163, 139, 53, 0.3);
-    animation: checkIconGlow 0.8s ease-out 0.5s both;
+    text-shadow: 
+        0 0 20px rgba(160, 217, 200, 0.5),
+        0 0 40px rgba(212, 196, 108, 0.3);
+    animation: iconGlow 2s ease-in-out infinite alternate;
+    background: rgba(255, 255, 255, 0.9);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@keyframes checkIconGlow {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-        text-shadow: 0 0 0 rgba(163, 139, 53, 0);
+@keyframes iconGlow {
+    from {
+        text-shadow: 
+            0 0 20px rgba(160, 217, 200, 0.5),
+            0 0 40px rgba(212, 196, 108, 0.3);
+        box-shadow: 
+            inset 0 0 20px rgba(255, 255, 255, 0.1),
+            0 0 20px rgba(160, 217, 200, 0.2);
     }
-    70% {
-        transform: scale(1.2);
-        text-shadow: 0 0 10px rgba(163, 139, 53, 0.6),
-                     0 0 20px rgba(163, 139, 53, 0.3);
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-        text-shadow: 0 0 5px rgba(163, 139, 53, 0.3);
+    to {
+        text-shadow: 
+            0 0 25px rgba(160, 217, 200, 0.7),
+            0 0 50px rgba(212, 196, 108, 0.5);
+        box-shadow: 
+            inset 0 0 25px rgba(255, 255, 255, 0.15),
+            0 0 30px rgba(160, 217, 200, 0.3);
     }
 }
 
 .benefit-text {
     font-family: 'Montserrat', sans-serif;
     font-size: 1.1rem;
-    color: #2d3748;
-    line-height: 1.4;
+    color: #1a4d3d; /* Темно-зеленый вместо белого */
+    line-height: 1.5;
     font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    word-wrap: break-word;
 }
 
-/* Навигация */
+/* Стеклянная навигация */
 .slider-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 25px;
+    position: relative;
+    z-index: 2;
+    margin-top: 60px;
 }
 
 .nav-arrow {
-    background: rgba(160, 217, 200, 0.3);
-    border: 1px solid rgba(115, 188, 169, 0.4);
-    color: var(--dark-green);
-    width: 35px;
-    height: 35px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    font-size: 1rem;
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .nav-arrow:hover {
-    background: rgba(160, 217, 200, 0.5);
-    transform: scale(1.1);
-    color: var(--gold-text);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.15);
+    box-shadow: 
+        0 12px 30px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 25px rgba(160, 217, 200, 0.3);
 }
 
 .dots-container {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .dot {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: rgba(160, 217, 200, 0.5);
+    background: rgba(255, 255, 255, 0.3);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.dot::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        transparent 100%);
+    transition: transform 0.4s ease;
 }
 
 .dot.active {
-    background: var(--light-gold);
-    animation: dotPulse 0.6s ease-out;
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(1.4);
+    box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.5),
+        0 0 40px rgba(160, 217, 200, 0.3);
 }
 
-@keyframes dotPulse {
-    0% {
-        transform: scale(0.5);
-        box-shadow: 0 0 0 0 rgba(163, 139, 53, 0.7);
-    }
-    70% {
-        transform: scale(1.3);
-        box-shadow: 0 0 0 8px rgba(163, 139, 53, 0);
-    }
-    100% {
-        transform: scale(1.2);
-        box-shadow: 0 0 0 0 rgba(163, 139, 53, 0);
-    }
+.dot.active::before {
+    transform: translateX(200%);
 }
 
 .dot:hover {
-    background: var(--gold-text);
-    transform: scale(1.3);
-}
-
-/* Анимация прогресс-бара */
-@keyframes progress {
-    0% { width: 0%; }
-    100% { width: 100%; }
-}
-
-.slide.active ~ .progress-bar {
-    animation: progress 5s linear, progressGlow 2s ease-out;
-}
-
-@keyframes progressGlow {
-    0% {
-        box-shadow: 0 0 0 0 rgba(163, 139, 53, 0.3);
-    }
-    50% {
-        box-shadow: 0 0 10px 2px rgba(163, 139, 53, 0.5);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(163, 139, 53, 0);
-    }
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(1.2);
 }
 
 /* Адаптивность */
@@ -2327,14 +2420,50 @@ body::after {
     }
     
     .slider-wrapper {
-        padding: 30px 20px 50px;
-        border-radius: 15px;
+        padding: 45px 35px 85px;
+        border-radius: 22px;
     }
     
     .slides-container {
         height: auto;
-        min-height: 250px;
+        min-height: 400px;
+        margin-bottom: 30px;
+    }
+    
+    .slide-title {
+        font-size: 1.3rem;
         margin-bottom: 25px;
+    }
+    
+    .benefit-item {
+        padding: 18px 20px;
+        gap: 15px;
+    }
+    
+    .benefit-text {
+        font-size: 1rem;
+    }
+    
+    .check-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 1.1rem;
+    }
+    
+    .nav-arrow {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .slider-nav {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .slider-wrapper {
+        padding: 25px 20px 55px;
+        border-radius: 18px;
     }
     
     .slide-title {
@@ -2342,78 +2471,41 @@ body::after {
         margin-bottom: 20px;
     }
     
-    .benefit-text {
-        font-size: 1rem;
-    }
-    
     .benefit-item {
+        padding: 15px 18px;
         gap: 12px;
-        margin-bottom: 12px;
-    }
-    
-    .check-icon {
-        font-size: 1.1rem;
-    }
-    
-    .slider-nav {
-        gap: 15px;
-    }
-    
-    .nav-arrow {
-        width: 30px;
-        height: 30px;
-        font-size: 0.8rem;
-    }
-    
-    .dot {
-        width: 6px;
-        height: 6px;
-    }
-    
-    /* Упрощенные анимации для мобильных */
-    @keyframes slideGlowEffect {
-        0% {
-            box-shadow: 0 0 0 0 rgba(163, 139, 53, 0);
-            filter: brightness(1);
-        }
-        50% {
-            box-shadow: 0 0 0 5px rgba(163, 139, 53, 0.1);
-            filter: brightness(1.03);
-        }
-        100% {
-            box-shadow: 0 0 0 0 rgba(163, 139, 53, 0);
-            filter: brightness(1);
-        }
-    }
-}
-
-@media (max-width: 480px) {
-    .slider-wrapper {
-        padding: 25px 15px 40px;
-    }
-    
-    .slide-title {
-        font-size: 1.1rem;
     }
     
     .benefit-text {
         font-size: 0.95rem;
     }
     
-    .benefit-item {
-        gap: 10px;
-        margin-bottom: 10px;
+    .benefits-list {
+        gap: 15px;
+    }
+    
+    .nav-arrow {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
     }
 }
 
-/* Отключение анимаций для пользователей с prefers-reduced-motion */
+/* Отключение сложных анимаций для пользователей с prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-    .slide.active,
+    .benefits-slider::before,
+    .slider-wrapper::before,
+    .progress-bar::after,
     .slide-title,
     .check-icon,
-    .dot.active,
-    .progress-bar {
+    .dot::before {
         animation: none !important;
+    }
+    
+    .benefit-item {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
     }
 }
 
@@ -2933,5 +3025,272 @@ body::after {
     .footer-privacy {
         margin-top: 12px;
         padding-top: 12px;
+    }
+}
+
+
+/* Премиум секция VK */
+.vk-community-section {
+    padding: 30px 0 60px 0;
+    margin-top: -50px;
+    background: transparent;
+    position: relative;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #2d7a65 0%, #a38b35 50%, #1a4d3d 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 15px;
+}
+
+.section-header p {
+    font-size: 1.2rem;
+    color: #2d7a65;
+    opacity: 0.8;
+}
+
+/* Премиум карточка */
+.vk-premium-card {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(160, 217, 200, 0.1) 50%,
+        rgba(212, 196, 108, 0.05) 100%);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 30px;
+    padding: 50px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.card-decoration {
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(212, 196, 108, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: floatDecoration 8s ease-in-out infinite;
+}
+
+@keyframes floatDecoration {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* Заголовок карточки */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.vk-logo-premium {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4a76a8 0%, #5b88bd 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    box-shadow: 0 10px 25px rgba(74, 118, 168, 0.3);
+}
+
+.card-title h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #2d7a65;
+    margin: 0 0 5px 0;
+    font-weight: 600;
+}
+
+.card-title p {
+    color: #1a4d3d;
+    margin: 0;
+    opacity: 0.8;
+    font-size: 1.1rem;
+}
+
+/* Особенности */
+.card-features {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.feature:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(10px);
+}
+
+.feature-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #a38b35 0%, #d4c46c 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.feature-text h4 {
+    color: #2d7a65;
+    margin: 0 0 8px 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.feature-text p {
+    color: #1a4d3d;
+    margin: 0;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+/* Кнопка CTA */
+.card-actions {
+    position: relative;
+    z-index: 2;
+}
+
+.premium-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    background: linear-gradient(135deg, #2d7a65 0%, #1a4d3d 100%);
+    color: white;
+    padding: 18px 35px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(45, 122, 101, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.premium-cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(45, 122, 101, 0.4);
+    color: white;
+}
+
+.premium-cta-btn i {
+    transition: transform 0.3s ease;
+}
+
+.premium-cta-btn:hover i {
+    transform: translateX(5px);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .vk-premium-card {
+        padding: 30px 25px;
+        border-radius: 25px;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .feature {
+         flex-direction: row; /* Оставляем горизонтально */
+        align-items: center; /* Центрируем по вертикали */
+        text-align: left; /* Текст слева */
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .section-header h2 {
+        font-size: 2rem;
+    }
+    
+    .premium-cta-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+        flex-shrink: 0; /* Запрещаем сжатие */
+    }
+    
+    .feature-text {
+        flex: 1; /* Занимает оставшееся пространство */
+    }
+    
+    .feature-text h4 {
+        margin: 0 0 5px 0;
+        font-size: 0.95rem;
+    }
+    
+    .feature-text p {
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
+    .feature {
+        gap: 12px;
+        padding: 12px;
+    }
+    
+    .feature-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .feature-text h4 {
+        font-size: 0.9rem;
+    }
+    
+    .feature-text p {
+        font-size: 0.85rem;
     }
 }
